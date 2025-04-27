@@ -1,0 +1,9 @@
+[tool.isort]
+profile = "black"
+known_first_party = """
+    controllers,
+    robot,
+    ui,
+    utils,
+    workers
+"""
