@@ -2,7 +2,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 from robot import LineFollower
-from utils import Messages, RunningModes, SerialOutputs, StopModes
+from utils import Booleans, Messages, RunningModes, SerialOutputs, StopModes
 
 from .byte_input import ByteInput
 from .mode_select import ModeSelect
@@ -46,6 +46,12 @@ class SenderWidget(QWidget):
             StopModes,
             self._on_send,
         )
+        self.log_data_input = ModeSelect(
+            "Log Data:",
+            SerialOutputs.SET_LOG_DATA,
+            Booleans,
+            self._on_send,
+        )
 
     def _on_send(self, command: SerialOutputs, value: bytes) -> None:
         msg = Messages.COMMAND(command, value)
@@ -62,4 +68,5 @@ class SenderWidget(QWidget):
         main_layout.addWidget(self.stop_time_input)
         main_layout.addWidget(self.running_mode_input)
         main_layout.addWidget(self.stop_mode_input)
+        main_layout.addWidget(self.log_data_input)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)

@@ -18,6 +18,7 @@ class SerialInputs(Enum):
     STOP_MODE = "S_MODE:"
     LAPS = "LAPS:"
     STOP_TIME = "S_TIME:"
+    LOG_DATA = "L_DATA:"
 
 
 class SerialOutputs(Enum):
@@ -34,6 +35,7 @@ class SerialOutputs(Enum):
     SET_STOP_MODE = b"S"
     SET_LAPS = b"L"
     SET_STOP_TIME = b"T"
+    SET_LOG_DATA = b"G"
 
 
 class Messages:
@@ -84,3 +86,7 @@ class Messages:
     @staticmethod
     def SET_STOP_MODE(mode: StopModes) -> bytes:
         return Messages.COMMAND(SerialOutputs.SET_STOP_MODE, bytes([mode.value]))
+
+    @staticmethod
+    def SET_LOG_DATA(log_data: bool) -> bytes:
+        return Messages.COMMAND(SerialOutputs.SET_LOG_DATA, log_data.to_bytes())

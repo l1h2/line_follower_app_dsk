@@ -75,15 +75,20 @@ class BluetoothListenerWorker(QThread):
                 buffer = b""
 
     def _handle_binary(self, buffer: bytes, timestamp: int) -> None:
-        word = (buffer[0] << 8) | buffer[1]
+        try:
+            word = (buffer[0] << 8) | buffer[1]
+        except IndexError:
+            return
+
         bits = [(word & (1 << i)) >> i for i in BIT_POSITIONS]
-        formatted_bits = "  |  ".join(
+        formatted_bits = "   ".join(
             [
-                f"{bits[0] if bits[0] == 1 else ' '}",
-                "  ".join(str(bit if bit == 1 else " ") for bit in bits[1:6]),
-                "  ".join(str(bit if bit == 1 else " ") for bit in bits[7:11]),
-                f"{bits[11] if bits[11] == 1 else ' '}",
-                f"||  {bits[6] if bits[6] == 1 else ' '}",
+                f"{bits[0] if bits[0] == 1 else '  '}",
+                "|",
+                "  ".join(str(bit if bit == 1 else "  ") for bit in bits[1:10]),
+                "|",
+                f"{bits[10] if bits[10] == 1 else '  '}",
+                f"||  {bits[11] if bits[11] == 1 else '  '}",
             ]
         )
 

@@ -1,3 +1,6 @@
+from enum import Enum
+
+
 class Files:
     """List of file names used in the program."""
 
@@ -10,7 +13,7 @@ class Files:
 class SerialConfig:
     """Serial port configuration."""
 
-    PORT = "COM3"
+    PORT = "COM9"
     BAUD_RATE = 9600
     TIMEOUT = 1
 
@@ -18,3 +21,10 @@ class SerialConfig:
 class UIConstants:
     MAX_DISPLAY_LINES = 70
     ROW_HEIGHT = 40
+
+
+class Booleans(Enum):
+    """List of boolean values used in the program."""
+
+    FALSE = 0
+    TRUE = 1

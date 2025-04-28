@@ -19,7 +19,6 @@ class RunningModes(Enum):
     INIT = 0
     BASE_PID = 1
     SENSOR_TEST = 2
-    TIME_STOP = 3
 
 
 class StopModes(Enum):

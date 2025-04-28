@@ -39,7 +39,7 @@ class ModeSelect(QWidget):
 
     def _add_options(self) -> None:
         self.options = QComboBox()
-        self.options.setFixedWidth(100)
+        self.options.setFixedWidth(120)
         self.options.addItems([e.name for e in self._enum_class])
         self.options.setToolTip("Select a mode")
 

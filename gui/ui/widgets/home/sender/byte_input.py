@@ -52,7 +52,7 @@ class ByteInput(QWidget):
 
     def _add_input(self) -> None:
         self.input = QLineEdit()
-        self.input.setFixedWidth(40)
+        self.input.setFixedWidth(60)
         self.input.setMaxLength(3)
         self.input.setPlaceholderText("0-255")
         self.input.setValidator(QIntValidator(0, 255))

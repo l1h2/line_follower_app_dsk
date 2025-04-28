@@ -29,6 +29,7 @@ class ListenerWidget(QWidget):
             SerialInputs.STATE: self.state_display.set_value,
             SerialInputs.RUNNING_MODE: self.running_mode_display.set_value,
             SerialInputs.STOP_MODE: self.stop_mode_display.set_value,
+            SerialInputs.LOG_DATA: self.log_data_display.set_value,
         }
 
     def print_text(self, text: str) -> None:
@@ -48,6 +49,7 @@ class ListenerWidget(QWidget):
         self.stop_time_display = ByteDisplay()
         self.running_mode_display = ByteDisplay()
         self.stop_mode_display = ByteDisplay()
+        self.log_data_display = ByteDisplay()
 
         self.state_display = ByteDisplay("STATE:", Qt.AlignmentFlag.AlignCenter)
         self._add_text_display()
@@ -68,6 +70,7 @@ class ListenerWidget(QWidget):
         values_layout.addWidget(self.stop_time_display)
         values_layout.addWidget(self.running_mode_display)
         values_layout.addWidget(self.stop_mode_display)
+        values_layout.addWidget(self.log_data_display)
         values_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
         text_display_layout = QVBoxLayout()

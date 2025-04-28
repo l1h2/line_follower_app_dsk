@@ -38,6 +38,7 @@ class LineFollower:
             self._stop_mode = None
             self._laps = 0
             self._stop_time = 0
+            self._log_data = False
 
             self._bluetooth = BluetoothApi()
             self._initialized = True
@@ -126,6 +127,7 @@ class LineFollower:
 
     def _update_state(self, state: int) -> None:
         self._state = RobotStates(state)
+        self._is_running = state == RobotStates.RUNNING
         self._state_changer.signal_state_change()
 
     def _update_running_mode(self, mode: int) -> None:
@@ -139,3 +141,6 @@ class LineFollower:
 
     def _update_stop_time(self, stop_time: int) -> None:
         self._stop_time = stop_time
+
+    def set_log_data(self, log_data: int) -> None:
+        self._log_data = log_data == 1
