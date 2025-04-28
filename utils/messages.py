@@ -6,7 +6,7 @@ from .robot_configs import RunningModes, StopModes
 class SerialInputs(Enum):
     """List of serial inputs used in the program."""
 
-    START_SIGNAL = "START\n"
+    START_SIGNAL = "START"
     STOP_SIGNAL = b"STOP"
     KP = "KP:"
     KI = "KI:"
@@ -39,62 +39,48 @@ class SerialOutputs(Enum):
 class Messages:
     """List of messages that can be sent to the robot."""
 
-    START = SerialOutputs.START
-    STOP = SerialOutputs.STOP
+    @staticmethod
+    def COMMAND(command: SerialOutputs, value: bytes = b"\0") -> bytes:
+        if len(value) != 1:
+            raise ValueError("value must be a single byte.")
+
+        return command.value + value
+
+    START_SIGNAL = COMMAND(SerialOutputs.START)
+    STOP_SIGNAL = COMMAND(SerialOutputs.STOP)
 
     @staticmethod
     def SET_KP(kp: bytes) -> bytes:
-        if len(kp) != 1:
-            raise ValueError("kp must be a single byte.")
-
-        return SerialOutputs.SET_KP.value + kp
+        return Messages.COMMAND(SerialOutputs.SET_KP, kp)
 
     @staticmethod
     def SET_KI(ki: bytes) -> bytes:
-        if len(ki) != 1:
-            raise ValueError("ki must be a single byte.")
-
-        return SerialOutputs.SET_KI.value + ki
+        return Messages.COMMAND(SerialOutputs.SET_KI, ki)
 
     @staticmethod
     def SET_KD(kd: bytes) -> bytes:
-        if len(kd) != 1:
-            raise ValueError("kd must be a single byte.")
-
-        return SerialOutputs.SET_KD.value + kd
+        return Messages.COMMAND(SerialOutputs.SET_KD, kd)
 
     @staticmethod
     def SET_BASE_PWM(base_pwm: bytes) -> bytes:
-        if len(base_pwm) != 1:
-            raise ValueError("base_pwm must be a single byte.")
-
-        return SerialOutputs.SET_BASE_PWM.value + base_pwm
+        return Messages.COMMAND(SerialOutputs.SET_BASE_PWM, base_pwm)
 
     @staticmethod
     def SET_MAX_PWM(max_pwm: bytes) -> bytes:
-        if len(max_pwm) != 1:
-            raise ValueError("max_pwm must be a single byte.")
-
-        return SerialOutputs.SET_MAX_PWM.value + max_pwm
+        return Messages.COMMAND(SerialOutputs.SET_MAX_PWM, max_pwm)
 
     @staticmethod
     def SET_LAPS(laps: bytes) -> bytes:
-        if len(laps) != 1:
-            raise ValueError("laps must be a single byte.")
-
-        return SerialOutputs.SET_LAPS.value + laps
+        return Messages.COMMAND(SerialOutputs.SET_LAPS, laps)
 
     @staticmethod
     def SET_STOP_TIME(stop_time: bytes) -> bytes:
-        if len(stop_time) != 1:
-            raise ValueError("stop_time must be a single byte.")
-
-        return SerialOutputs.SET_STOP_TIME.value + stop_time
+        return Messages.COMMAND(SerialOutputs.SET_STOP_TIME, stop_time)
 
     @staticmethod
     def SET_RUNNING_MODE(mode: RunningModes) -> bytes:
-        return SerialOutputs.SET_RUNNING_MODE.value + bytes([mode.value])
+        return Messages.COMMAND(SerialOutputs.SET_RUNNING_MODE, bytes([mode.value]))
 
     @staticmethod
     def SET_STOP_MODE(mode: StopModes) -> bytes:
-        return SerialOutputs.SET_STOP_MODE.value + bytes([mode.value])
+        return Messages.COMMAND(SerialOutputs.SET_STOP_MODE, bytes([mode.value]))

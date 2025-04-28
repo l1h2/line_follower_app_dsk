@@ -7,7 +7,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import csv
 
-from utils import Files
+from utils import BIT_POSITIONS, Files
 
 
 def read_binary_file(data_path: str, timestamps_path: str, output_path: str) -> None:
@@ -34,9 +34,7 @@ def read_binary_file(data_path: str, timestamps_path: str, output_path: str) -> 
                     raise ValueError("No more timestamps available.")
 
                 word = (data[0] << 8) | data[1]
-
-                bit_positions = (0, 8, 9, 10, 11, 1, 12, 13, 14, 15, 3, 2)
-                bits = ((word & (1 << i)) >> i for i in bit_positions)
+                bits = ((word & (1 << i)) >> i for i in BIT_POSITIONS)
 
                 csv_writer.writerow((byte_pair_index, timestamp, *bits))
                 byte_pair_index += 1

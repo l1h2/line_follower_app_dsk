@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIntValidator
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QPushButton, QWidget
 
-from utils import UIConstants
+from utils import SerialOutputs, UIConstants
 
 
 class ByteInput(QWidget):
@@ -15,7 +15,8 @@ class ByteInput(QWidget):
 
     #### Parameters:
     - `label` (str): The label for the input field.
-    - `callback` (Callable[[bytes], None]): A callback function that takes a byte value as an argument.
+    - `command` (SerialOutputs): The command associated with the input value.
+    - `callback` (Callable[[SerialOutputs, bytes], None]): The callback function to be called when the input value is submitted.
 
     #### Attributes:
     - `label` (QLabel): The label for the input field.
@@ -23,9 +24,16 @@ class ByteInput(QWidget):
     - `button` (QPushButton): The button to submit the input value.
     """
 
-    def __init__(self, label: str, callback: Callable[[bytes], None]):
+    def __init__(
+        self,
+        label: str,
+        command: SerialOutputs,
+        callback: Callable[[SerialOutputs, bytes], None],
+    ):
         super().__init__()
+        self._command = command
         self._on_send = callback
+
         self.setFixedHeight(UIConstants.ROW_HEIGHT)
         self._init_ui(label)
 
@@ -69,7 +77,7 @@ class ByteInput(QWidget):
             return
 
         value = int(value)
-        self._on_send(value.to_bytes())
+        self._on_send(self._command, value.to_bytes())
 
     def _set_layout(self) -> None:
         layout = QHBoxLayout(self)

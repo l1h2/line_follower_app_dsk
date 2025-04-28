@@ -55,6 +55,7 @@ class ListenerWidget(QWidget):
     def _add_text_display(self) -> None:
         self._output_display = QTextEdit(self)
         self._output_display.setReadOnly(True)
+        self._output_display.setFixedWidth(400)
 
     def _set_layout(self) -> None:
         values_layout = QVBoxLayout()

@@ -1,4 +1,3 @@
-from .listener.listener import ListenerWidget
-from .sender.sender import SenderWidget
+from .home.home import HomeWidget
 
-__all__ = ["ListenerWidget", "SenderWidget"]
+__all__ = ["HomeWidget"]

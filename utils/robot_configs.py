@@ -1,5 +1,7 @@
 from enum import Enum
 
+BIT_POSITIONS = (0, 8, 9, 10, 11, 1, 12, 13, 14, 15, 3, 2)
+
 
 class RobotStates(Enum):
     """List of robot states used in the program."""

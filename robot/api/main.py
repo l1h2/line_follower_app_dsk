@@ -1,52 +1,86 @@
 import atexit
 
 import serial
+from PyQt6.QtCore import QObject, pyqtSignal
 
 from utils import SerialConfig
 
 
-class BluetoothApi:
-    def __init__(self):
-        self._bluetooth: serial.Serial | None = None
-        atexit.register(self.disconnect)
+class BluetoothApi(QObject):
+    connection_change = pyqtSignal()
 
-    def connect(self) -> None:
+    def __init__(self):
+        super().__init__()
+        self._bluetooth: serial.Serial | None = None
+        atexit.register(self._safe_disconnect)
+
+    @property
+    def connected(self) -> bool:
+        return self._bluetooth is not None and self._bluetooth.is_open
+
+    def connect_serial(self) -> bool:
         try:
             self._bluetooth = serial.Serial(
                 SerialConfig.PORT,
                 SerialConfig.BAUD_RATE,
                 timeout=SerialConfig.TIMEOUT,
             )
+            self.connection_change.emit()
         except serial.SerialException as e:
             print(f"Failed to connect to Bluetooth device: {e}")
             self._bluetooth = None
-            return
 
-    def disconnect(self) -> None:
-        if self._bluetooth and self._bluetooth.is_open:
-            self._bluetooth.close()
+        return self.connected
+
+    def disconnect_serial(self) -> None:
+        if self.connected:
+            self._bluetooth.close()  # type: ignore[union-attr]
         self._bluetooth = None
 
+        self.connection_change.emit()
+
     def read_string(self) -> str | None:
-        if not self._bluetooth:
+        if not self.connected:
             return None
 
-        if self._bluetooth.in_waiting <= 0:
-            return None
+        try:
+            if self._bluetooth.in_waiting <= 0:  # type: ignore[union-attr]
+                return None
 
-        data = self._bluetooth.readline().decode("utf-8")
-        return data
+            data = self._bluetooth.read_until(b"\r\n")  # type: ignore[union-attr]
+            return data[:-2].decode("latin-1")
+        except serial.SerialException as e:
+            print(f"Failed to read data from Bluetooth device: {e}")
+            self.disconnect_serial()
+            return None
 
     def read_binary(self) -> bytes | None:
-        if not self._bluetooth:
+        if not self.connected:
             return None
 
-        if self._bluetooth.in_waiting <= 0:
+        try:
+            if self._bluetooth.in_waiting <= 0:  # type: ignore[union-attr]
+                return None
+
+            data = self._bluetooth.read(2)  # type: ignore[union-attr]
+            return data
+        except serial.SerialException as e:
+            print(f"Failed to read data from Bluetooth device: {e}")
+            self.disconnect_serial()
             return None
 
-        data = self._bluetooth.read(2)
-        return data
+    def write_data(self, data: bytes) -> None:
+        if not self.connected:
+            return
 
-    def write_data(self):
-        # Write data to the Bluetooth device
-        pass
+        try:
+            self._bluetooth.write(data)  # type: ignore[union-attr]
+            print(f"Sent: {data}")
+        except serial.SerialException as e:
+            print(f"Failed to write data to Bluetooth device: {e}")
+            self.disconnect_serial()
+
+    def _safe_disconnect(self) -> None:
+        if self.connected:
+            self._bluetooth.close()  # type: ignore[union-attr]
+        self._bluetooth = None
