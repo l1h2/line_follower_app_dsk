@@ -126,11 +126,13 @@ class ControllerWidget(QWidget):
             self.connect_button.setText("Disconnect")
             self.connect_button.setStyleSheet(Styles.STOP_BUTTONS)
             self.ports.setEnabled(False)
+            self.refresh_button.setEnabled(False)
         else:
             self.connect_button.setText("Connect")
             self.connect_button.setStyleSheet(Styles.START_BUTTONS)
             self._disable_start_button()
             self.ports.setEnabled(True)
+            self.refresh_button.setEnabled(True)
 
     def _set_layout(self) -> None:
         ports_options_layout = QHBoxLayout()

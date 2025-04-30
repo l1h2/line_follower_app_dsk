@@ -29,7 +29,7 @@ class BluetoothListenerWorker(QThread):
         self._listening = False
 
     def _listen_string(self) -> None:
-        with open(Files.TEXT_FILE, "a") as f:
+        with open(Files.TEXT_FILE, "a", encoding="latin-1") as f:
             while self._listening:
                 data = self._line_follower.bluetooth.read_string()
 
