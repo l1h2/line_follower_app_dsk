@@ -6,6 +6,7 @@ from .robot_configs import RunningModes, StopModes
 class SerialInputs(Enum):
     """List of serial inputs used in the program."""
 
+    BATTERY = "BATTERY:"
     START_SIGNAL = "START"
     STOP_SIGNAL = b"STOP"
     KP = "KP:"

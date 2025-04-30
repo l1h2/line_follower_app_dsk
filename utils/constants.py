@@ -13,7 +13,7 @@ class Files:
 class SerialConfig:
     """Serial port configuration."""
 
-    PORT = "COM9"
+    PORT = "COM3"
     BAUD_RATE = 9600
     TIMEOUT = 1
 
@@ -26,5 +26,5 @@ class UIConstants:
 class Booleans(Enum):
     """List of boolean values used in the program."""
 
-    FALSE = 0
-    TRUE = 1
+    OFF = 0
+    ON = 1

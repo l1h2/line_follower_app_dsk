@@ -19,6 +19,7 @@ class ListenerWidget(QWidget):
         self._start_worker()
 
         self._update_map = {
+            SerialInputs.BATTERY: self.battery_display.set_value,
             SerialInputs.KP: self.kp_display.set_value,
             SerialInputs.KI: self.ki_display.set_value,
             SerialInputs.KD: self.kd_display.set_value,
@@ -52,12 +53,13 @@ class ListenerWidget(QWidget):
         self.log_data_display = ByteDisplay()
 
         self.state_display = ByteDisplay("STATE:", Qt.AlignmentFlag.AlignCenter)
+        self.battery_display = ByteDisplay("BATTERY:", Qt.AlignmentFlag.AlignCenter)
         self._add_text_display()
 
     def _add_text_display(self) -> None:
         self._output_display = QTextEdit(self)
         self._output_display.setReadOnly(True)
-        self._output_display.setFixedWidth(400)
+        self._output_display.setFixedWidth(450)
 
     def _set_layout(self) -> None:
         values_layout = QVBoxLayout()
@@ -73,8 +75,12 @@ class ListenerWidget(QWidget):
         values_layout.addWidget(self.log_data_display)
         values_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
+        state_layout = QHBoxLayout()
+        state_layout.addWidget(self.state_display)
+        state_layout.addWidget(self.battery_display)
+
         text_display_layout = QVBoxLayout()
-        text_display_layout.addWidget(self.state_display)
+        text_display_layout.addLayout(state_layout)
         text_display_layout.addWidget(self._output_display)
 
         main_layout = QHBoxLayout(self)
@@ -117,12 +123,16 @@ class ListenerWidget(QWidget):
             int_value = int(ord(msg[-1]))
             str_value = str(int_value)
 
-            if command == SerialInputs.RUNNING_MODE:
+            if command == SerialInputs.BATTERY:
+                str_value = str(LineFollower.get_battery_voltage(int_value)) + " V"
+            elif command == SerialInputs.STATE:
+                str_value = RobotStates(int_value).name
+            elif command == SerialInputs.RUNNING_MODE:
                 str_value = RunningModes(int_value).name
             elif command == SerialInputs.STOP_MODE:
                 str_value = StopModes(int_value).name
-            elif command == SerialInputs.STATE:
-                str_value = RobotStates(int_value).name
+            elif command == SerialInputs.LOG_DATA:
+                str_value = "OFF" if int_value == 0 else "ON"
 
             self._update_map[command](str_value)
             self._line_follower.update_config(command, int_value)

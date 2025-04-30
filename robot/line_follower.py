@@ -18,6 +18,9 @@ class StateChanger(QObject):
 class LineFollower:
     _instance = None
 
+    BATTERY_CELLS = 2
+    CELL_MAX_VOLTAGE = 5.0
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(LineFollower, cls).__new__(cls)
@@ -28,6 +31,7 @@ class LineFollower:
             self._state_changer = StateChanger()
             self._is_running = False
 
+            self._battery = None
             self._kp = None
             self._ki = None
             self._kd = None
@@ -44,6 +48,7 @@ class LineFollower:
             self._initialized = True
 
             self._config_map = {
+                SerialInputs.BATTERY: self._update_battery,
                 SerialInputs.KP: self._update_kp,
                 SerialInputs.KI: self._update_ki,
                 SerialInputs.KD: self._update_kd,
@@ -57,12 +62,20 @@ class LineFollower:
             }
 
     @property
+    def is_running(self) -> bool:
+        return self._is_running
+
+    @property
     def state_changer(self) -> StateChanger:
         return self._state_changer
 
     @property
     def bluetooth(self) -> BluetoothApi:
         return self._bluetooth
+
+    @property
+    def battery(self) -> int | None:
+        return self._battery
 
     @property
     def kp(self) -> int | None:
@@ -104,11 +117,24 @@ class LineFollower:
     def stop_time(self) -> int:
         return self._stop_time
 
+    @staticmethod
+    def get_battery_voltage(byte: int) -> float:
+        if byte == 0:
+            return 0.0
+
+        voltage = (
+            (byte / 255) * LineFollower.CELL_MAX_VOLTAGE * LineFollower.BATTERY_CELLS
+        )
+        return round(voltage, 2)
+
     def update_config(self, command: SerialInputs, value: int) -> None:
         if command not in self._config_map:
             return
 
         self._config_map[command](value)
+
+    def _update_battery(self, battery: int) -> None:
+        self._battery = battery
 
     def _update_kp(self, kp: int) -> None:
         self._kp = kp

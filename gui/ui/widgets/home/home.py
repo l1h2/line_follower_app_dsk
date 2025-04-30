@@ -1,9 +1,8 @@
-from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 
 from robot import LineFollower
 
-from .connector.connector import ConnectorWidget
+from .connector.connector import ControllerWidget
 from .listener.listener import ListenerWidget
 from .sender.sender import SenderWidget
 
@@ -22,7 +21,7 @@ class HomeWidget(QWidget):
     def _add_widgets(self) -> None:
         self.sender_widget = SenderWidget()
         self.listener_widget = ListenerWidget()
-        self.connector_widget = ConnectorWidget()
+        self.connector_widget = ControllerWidget()
 
     def _set_layout(self) -> None:
         main_layout = QVBoxLayout(self)
