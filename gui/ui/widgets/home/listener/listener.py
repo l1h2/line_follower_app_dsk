@@ -133,6 +133,10 @@ class ListenerWidget(QWidget):
                 str_value = StopModes(int_value).name
             elif command == SerialInputs.LOG_DATA:
                 str_value = "OFF" if int_value == 0 else "ON"
+            elif command == SerialInputs.KD:
+                if int_value == 255:
+                    int_value = 1000
+                    str_value = "1000"
 
             self._update_map[command](str_value)
             self._line_follower.update_config(command, int_value)

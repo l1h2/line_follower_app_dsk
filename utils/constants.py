@@ -13,7 +13,7 @@ class Files:
 class SerialConfig:
     """Serial port configuration."""
 
-    PORT = "COM9"
+    PORT = "COM4"
     BAUD_RATE = 9600
     TIMEOUT = 1
 
