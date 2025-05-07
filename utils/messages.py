@@ -12,6 +12,8 @@ class SerialInputs(Enum):
     KP = "KP:"
     KI = "KI:"
     KD = "KD:"
+    KFF = "KFF:"
+    KB = "KB:"
     BASE_PWM = "BASE_PWM:"
     MAX_PWM = "MAX_PWM:"
     STATE = "STATE:"
@@ -30,6 +32,8 @@ class SerialOutputs(Enum):
     SET_KP = b"P"
     SET_KI = b"I"
     SET_KD = b"D"
+    SET_KFF = b"F"
+    SET_KB = b"K"
     SET_BASE_PWM = b"B"
     SET_MAX_PWM = b"M"
     SET_RUNNING_MODE = b"R"
@@ -63,6 +67,14 @@ class Messages:
     @staticmethod
     def SET_KD(kd: bytes) -> bytes:
         return Messages.COMMAND(SerialOutputs.SET_KD, kd)
+
+    @staticmethod
+    def SET_KFF(kff: bytes) -> bytes:
+        return Messages.COMMAND(SerialOutputs.SET_KFF, kff)
+
+    @staticmethod
+    def SET_KB(kb: bytes) -> bytes:
+        return Messages.COMMAND(SerialOutputs.SET_KB, kb)
 
     @staticmethod
     def SET_BASE_PWM(base_pwm: bytes) -> bytes:

@@ -23,8 +23,9 @@ class ListenerWidget(QWidget):
             SerialInputs.KP: self.kp_display.set_value,
             SerialInputs.KI: self.ki_display.set_value,
             SerialInputs.KD: self.kd_display.set_value,
+            SerialInputs.KFF: self.kff_display.set_value,
+            SerialInputs.KB: self.kb_display.set_value,
             SerialInputs.BASE_PWM: self.base_pwm_display.set_value,
-            SerialInputs.MAX_PWM: self.max_pwm_display.set_value,
             SerialInputs.LAPS: self.laps_display.set_value,
             SerialInputs.STOP_TIME: self.stop_time_display.set_value,
             SerialInputs.STATE: self.state_display.set_value,
@@ -44,8 +45,9 @@ class ListenerWidget(QWidget):
         self.kp_display = ByteDisplay()
         self.ki_display = ByteDisplay()
         self.kd_display = ByteDisplay()
+        self.kff_display = ByteDisplay()
+        self.kb_display = ByteDisplay()
         self.base_pwm_display = ByteDisplay()
-        self.max_pwm_display = ByteDisplay()
         self.laps_display = ByteDisplay()
         self.stop_time_display = ByteDisplay()
         self.running_mode_display = ByteDisplay()
@@ -66,8 +68,9 @@ class ListenerWidget(QWidget):
         values_layout.addWidget(self.kp_display)
         values_layout.addWidget(self.ki_display)
         values_layout.addWidget(self.kd_display)
+        values_layout.addWidget(self.kff_display)
+        values_layout.addWidget(self.kb_display)
         values_layout.addWidget(self.base_pwm_display)
-        values_layout.addWidget(self.max_pwm_display)
         values_layout.addWidget(self.laps_display)
         values_layout.addWidget(self.stop_time_display)
         values_layout.addWidget(self.running_mode_display)

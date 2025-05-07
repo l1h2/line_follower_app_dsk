@@ -35,6 +35,8 @@ class LineFollower:
             self._kp = None
             self._ki = None
             self._kd = None
+            self._kff = None
+            self._kb = None
             self._base_pwm = None
             self._max_pwm = None
             self._state = None
@@ -88,6 +90,14 @@ class LineFollower:
     @property
     def kd(self) -> int | None:
         return self._kd
+
+    @property
+    def kff(self) -> int | None:
+        return self._kff
+
+    @property
+    def kb(self) -> int | None:
+        return self._kb
 
     @property
     def base_pwm(self) -> int | None:

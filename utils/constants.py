@@ -13,12 +13,14 @@ class Files:
 class SerialConfig:
     """Serial port configuration."""
 
-    PORT = "COM4"
-    BAUD_RATE = 9600
+    PORT = "COM3"
+    BAUD_RATE = 74880
     TIMEOUT = 1
 
 
 class UIConstants:
+    """UI constants for the program."""
+
     MAX_DISPLAY_LINES = 70
     ROW_HEIGHT = 40
 

@@ -23,11 +23,10 @@ class SenderWidget(QWidget):
         self.kp_input = ByteInput("KP:", SerialOutputs.SET_KP, self._on_send)
         self.ki_input = ByteInput("KI:", SerialOutputs.SET_KI, self._on_send)
         self.kd_input = ByteInput("KD:", SerialOutputs.SET_KD, self._on_send)
+        self.kff_input = ByteInput("KFF:", SerialOutputs.SET_KFF, self._on_send)
+        self.kb_input = ByteInput("KB:", SerialOutputs.SET_KB, self._on_send)
         self.base_pwm_input = ByteInput(
             "Base PWM:", SerialOutputs.SET_BASE_PWM, self._on_send
-        )
-        self.max_pwm_input = ByteInput(
-            "Max PWM:", SerialOutputs.SET_MAX_PWM, self._on_send
         )
         self.laps_input = ByteInput("Laps:", SerialOutputs.SET_LAPS, self._on_send)
         self.stop_time_input = ByteInput(
@@ -62,8 +61,9 @@ class SenderWidget(QWidget):
         main_layout.addWidget(self.kp_input)
         main_layout.addWidget(self.ki_input)
         main_layout.addWidget(self.kd_input)
+        main_layout.addWidget(self.kff_input)
+        main_layout.addWidget(self.kb_input)
         main_layout.addWidget(self.base_pwm_input)
-        main_layout.addWidget(self.max_pwm_input)
         main_layout.addWidget(self.laps_input)
         main_layout.addWidget(self.stop_time_input)
         main_layout.addWidget(self.running_mode_input)
