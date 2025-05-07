@@ -37,6 +37,9 @@ class ByteInput(QWidget):
         self.setFixedHeight(UIConstants.ROW_HEIGHT)
         self._init_ui(label)
 
+    def send_value(self) -> None:
+        self._on_input()
+
     def _init_ui(self, label: str) -> None:
         self._add_widgets(label)
         self._set_layout()

@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QPushButton, QVBoxLayout, QWidget
 
 from robot import LineFollower
 from utils import Booleans, Messages, RunningModes, SerialOutputs, StopModes
@@ -52,6 +52,29 @@ class SenderWidget(QWidget):
             self._on_send,
         )
 
+        self._add_send_all_button()
+
+    def _add_send_all_button(self) -> None:
+        self.send_all_button = QPushButton("Send All")
+        self.send_all_button.setFixedHeight(30)
+        self.send_all_button.setToolTip("Send all values to the robot")
+        self.send_all_button.setStyleSheet("background-color: #4CAF50; color: white;")
+        self.send_all_button.clicked.connect(self._on_send_all)
+
+    def _on_send_all(self) -> None:
+        self.kp_input.send_value()
+        self.ki_input.send_value()
+        self.kd_input.send_value()
+        self.kff_input.send_value()
+        self.kb_input.send_value()
+        self.base_pwm_input.send_value()
+        self.laps_input.send_value()
+        self.stop_time_input.send_value()
+
+        self.running_mode_input.send_value()
+        self.stop_mode_input.send_value()
+        self.log_data_input.send_value()
+
     def _on_send(self, command: SerialOutputs, value: bytes) -> None:
         msg = Messages.COMMAND(command, value)
         self._line_follower.bluetooth.write_data(msg)
@@ -69,4 +92,5 @@ class SenderWidget(QWidget):
         main_layout.addWidget(self.running_mode_input)
         main_layout.addWidget(self.stop_mode_input)
         main_layout.addWidget(self.log_data_input)
+        main_layout.addWidget(self.send_all_button)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignTop)

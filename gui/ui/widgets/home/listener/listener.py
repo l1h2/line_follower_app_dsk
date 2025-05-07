@@ -1,17 +1,20 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QHBoxLayout, QTextEdit, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QHBoxLayout, QStackedLayout, QVBoxLayout, QWidget
 
 from gui.workers import BluetoothListenerWorker
 from robot import LineFollower
-from utils import RobotStates, RunningModes, SerialInputs, StopModes, UIConstants
+from utils import RobotStates, RunningModes, SerialInputs, StopModes
 
 from .byte_display import ByteDisplay
+from .debug_button import DebugButton
+from .text_display import TextDisplay
 
 
 class ListenerWidget(QWidget):
     def __init__(self):
         super().__init__()
-        self._max_display_lines = UIConstants.MAX_DISPLAY_LINES
+        self._debug_prints = False
+
         self._line_follower = LineFollower()
         self._worker = BluetoothListenerWorker()
 
@@ -34,9 +37,6 @@ class ListenerWidget(QWidget):
             SerialInputs.LOG_DATA: self.log_data_display.set_value,
         }
 
-    def print_text(self, text: str) -> None:
-        self._manage_display(text)
-
     def _init_ui(self) -> None:
         self._add_widgets()
         self._set_layout()
@@ -56,12 +56,13 @@ class ListenerWidget(QWidget):
 
         self.state_display = ByteDisplay("STATE:", Qt.AlignmentFlag.AlignCenter)
         self.battery_display = ByteDisplay("BATTERY:", Qt.AlignmentFlag.AlignCenter)
-        self._add_text_display()
 
-    def _add_text_display(self) -> None:
-        self._output_display = QTextEdit(self)
-        self._output_display.setReadOnly(True)
-        self._output_display.setFixedWidth(450)
+        self.output_display = TextDisplay(parent=self)
+        self.debug_button = DebugButton(self)
+        self.debug_button.debug_state_changed.connect(self._update_debug_state)
+
+    def _update_debug_state(self, state: bool) -> None:
+        self._debug_prints = state
 
     def _set_layout(self) -> None:
         values_layout = QVBoxLayout()
@@ -82,9 +83,14 @@ class ListenerWidget(QWidget):
         state_layout.addWidget(self.state_display)
         state_layout.addWidget(self.battery_display)
 
+        text_output_layout = QStackedLayout()
+        text_output_layout.addWidget(self.debug_button)
+        text_output_layout.addWidget(self.output_display)
+        text_output_layout.setStackingMode(QStackedLayout.StackingMode.StackAll)
+
         text_display_layout = QVBoxLayout()
         text_display_layout.addLayout(state_layout)
-        text_display_layout.addWidget(self._output_display)
+        text_display_layout.addLayout(text_output_layout)
 
         main_layout = QHBoxLayout(self)
         main_layout.addLayout(values_layout)
@@ -95,27 +101,10 @@ class ListenerWidget(QWidget):
         self._worker.start()
 
     def _handle_output(self, data: str) -> None:
-        self._manage_display(data)
-        self._handle_command(data)
+        if not self._handle_command(data) or self._debug_prints:
+            self.output_display.print_text(data)
 
-    def _manage_display(self, text: str) -> None:
-        self._output_display.append(text)
-        current_text = self._output_display.toPlainText()
-        lines = current_text.splitlines()
-
-        if len(lines) <= self._max_display_lines:
-            return
-
-        vertical_scrollbar = self._output_display.verticalScrollBar()
-        if not vertical_scrollbar:
-            return
-
-        scroll_position = vertical_scrollbar.value()
-
-        self._output_display.setPlainText("\n".join(lines[-self._max_display_lines :]))
-        vertical_scrollbar.setValue(scroll_position)
-
-    def _handle_command(self, msg: str) -> None:
+    def _handle_command(self, msg: str) -> bool:
         for command in self._update_map.keys():
             if not isinstance(command.value, str):
                 continue
@@ -143,4 +132,6 @@ class ListenerWidget(QWidget):
 
             self._update_map[command](str_value)
             self._line_follower.update_config(command, int_value)
-            break
+            return True
+
+        return False
