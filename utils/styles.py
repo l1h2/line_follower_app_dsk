@@ -1,4 +1,6 @@
 class Styles:
+    """This class contains styles for the GUI elements in the application."""
+
     START_BUTTONS = """
         color: black;
         background-color: green;

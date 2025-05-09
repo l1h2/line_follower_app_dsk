@@ -48,6 +48,19 @@ class Messages:
 
     @staticmethod
     def COMMAND(command: SerialOutputs, value: bytes = b"\0") -> bytes:
+        """
+        Create a command message to be sent to the robot.
+
+        Args:
+            command (SerialOutputs): The command to be sent.
+            value (bytes, optional): The data value associated with the command. Defaults to b"\0".
+
+        Raises:
+            ValueError: If the value is not a single byte.
+
+        Returns:
+            bytes: The command message to be sent to the robot.
+        """
         if len(value) != 1:
             raise ValueError("value must be a single byte.")
 

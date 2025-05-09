@@ -4,6 +4,20 @@ from utils import UIConstants
 
 
 class TextDisplay(QTextEdit):
+    """
+    ### TextDisplay Widget
+
+    A widget that displays text in a scrollable area. It is used to show the output of the robot's
+    operations.
+
+    #### Parameters:
+    - `max_display_lines (int)`: The maximum number of lines to display in the text area.
+    - `parent (QWidget | None)`: The parent widget of the TextDisplay widget.
+
+    #### Methods:
+    - `print_text(text: str) -> None`: Prints the given text to the text area.
+    """
+
     def __init__(
         self,
         max_display_lines: int = UIConstants.MAX_DISPLAY_LINES,
@@ -15,9 +29,16 @@ class TextDisplay(QTextEdit):
         self._max_display_lines = max_display_lines
 
     def print_text(self, text: str) -> None:
+        """
+        Print text to the QTextEdit widget displaying the text in a scrollable area.
+
+        Args:
+            text (str): The text to be displayed.
+        """
         self._manage_display(text)
 
     def _manage_display(self, text: str) -> None:
+        """Manage the display of text in the QTextEdit widget."""
         self.append(text)
         current_text = self.toPlainText()
         lines = current_text.splitlines()

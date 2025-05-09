@@ -6,6 +6,17 @@ from utils import Messages, RobotStates, Styles
 
 
 class ControllerWidget(QWidget):
+    """
+    ### ControllerWidget Class
+
+    A widget that allows the user to control the robot's Bluetooth connection and start/stop the robot.
+
+    #### Attributes:
+    - `start_button (QPushButton)`: Button to start or stop the robot.
+    - `refresh_button (QPushButton)`: Button to refresh the list of available COM ports.
+    - `ports (QComboBox)`: Combo box to select the COM port.
+    - `connect_button (QPushButton)`: Button to connect or disconnect the Bluetooth.
+    """
 
     def __init__(self):
         super().__init__()
@@ -23,16 +34,19 @@ class ControllerWidget(QWidget):
         self._init_ui()
 
     def _init_ui(self) -> None:
+        """Initialize the UI components of the connector widget."""
         self._add_widgets()
         self._set_layout()
 
     def _add_widgets(self) -> None:
+        """Add widgets to the connector widget."""
         self._add_start_button()
         self._add_ports_refresh_button()
         self._add_port_selector()
         self._add_connect_button()
 
     def _add_start_button(self) -> None:
+        """Add a button to start or stop the robot."""
         self.start_button = QPushButton()
         self.start_button.setFixedWidth(200)
         self.start_button.setFixedHeight(80)
@@ -42,12 +56,14 @@ class ControllerWidget(QWidget):
         self._update_start_button()
 
     def _toggle_start(self) -> None:
+        """Toggle the start button to start or stop the robot."""
         if self._line_follower.state == RobotStates.IDLE:
             self._line_follower.bluetooth.write_data(Messages.START_SIGNAL)
         elif self._line_follower.state == RobotStates.RUNNING:
             self._line_follower.bluetooth.write_data(Messages.STOP_SIGNAL)
 
     def _update_start_button(self) -> None:
+        """Update the start button based on the robot's state."""
         if self._line_follower.state == RobotStates.RUNNING:
             self.start_button.setText("Stop")
             self.start_button.setStyleSheet(Styles.STOP_BUTTONS)
@@ -60,17 +76,20 @@ class ControllerWidget(QWidget):
             self._disable_start_button()
 
     def _disable_start_button(self) -> None:
+        """Disable the start button when the robot is not in a valid state."""
         self.start_button.setText("Not Available")
         self.start_button.setStyleSheet(Styles.DISABLED_BUTTONS)
         self.start_button.setEnabled(False)
 
     def _add_ports_refresh_button(self) -> None:
+        """Add a button to refresh the list of available COM ports."""
         self.refresh_button = QPushButton("⟳")
         self.refresh_button.setFixedWidth(20)
         self.refresh_button.setToolTip("Refresh COM ports")
         self.refresh_button.clicked.connect(lambda: self._update_ports(True))
 
     def _add_port_selector(self) -> None:
+        """Add a selector for the available COM ports."""
         self.ports = QComboBox()
         self.ports.setFixedWidth(80)
         self.ports.addItems(self._line_follower.bluetooth.ports)
@@ -79,6 +98,7 @@ class ControllerWidget(QWidget):
         self.ports.currentTextChanged.connect(self._on_port_change)
 
     def _on_port_change(self, port: str | None) -> None:
+        """Handle the change of the selected COM port."""
         if not port or not self._update_port or port == self._current_port:
             return
 
@@ -90,6 +110,7 @@ class ControllerWidget(QWidget):
         self.ports.setCurrentText(self._current_port)
 
     def _update_ports(self, change_text: bool = True) -> None:
+        """Update the list of available COM ports."""
         self._update_port = False
 
         self.ports.clear()
@@ -106,6 +127,7 @@ class ControllerWidget(QWidget):
         self._update_port = True
 
     def _add_connect_button(self) -> None:
+        """Add a button to connect or disconnect the Bluetooth."""
         self.connect_button = QPushButton()
         self.connect_button.setFixedWidth(200)
         self.connect_button.setFixedHeight(80)
@@ -114,6 +136,7 @@ class ControllerWidget(QWidget):
         self._update_connection_button()
 
     def _toggle_connection(self) -> None:
+        """Toggle the Bluetooth connection."""
         if self._line_follower.bluetooth.connected:
             self._line_follower.bluetooth.disconnect_serial()
         else:
@@ -122,6 +145,7 @@ class ControllerWidget(QWidget):
         self._update_ports()
 
     def _update_connection_button(self) -> None:
+        """Update the connection button based on the Bluetooth connection status."""
         if self._line_follower.bluetooth.connected:
             self.connect_button.setText("Disconnect")
             self.connect_button.setStyleSheet(Styles.STOP_BUTTONS)
@@ -135,6 +159,7 @@ class ControllerWidget(QWidget):
             self.refresh_button.setEnabled(True)
 
     def _set_layout(self) -> None:
+        """Set the layout for the connector widget."""
         ports_options_layout = QHBoxLayout()
         ports_options_layout.addWidget(self.refresh_button)
         ports_options_layout.addWidget(self.ports)

@@ -4,6 +4,7 @@ from .ui import MainWindow
 
 
 def start_gui() -> None:
+    """Start the GUI application."""
     app = QApplication([])
 
     window = MainWindow()

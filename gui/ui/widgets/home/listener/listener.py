@@ -11,6 +11,29 @@ from .text_display import TextDisplay
 
 
 class ListenerWidget(QWidget):
+    """
+    ### ListenerWidget Class
+
+    A widget that listens for incoming data from the robot via Bluetooth and displays it in a user-friendly format.
+
+    #### Attributes:
+    - `kp_display (ByteDisplay)`: Display for the KP value.
+    - `ki_display (ByteDisplay)`: Display for the KI value.
+    - `kd_display (ByteDisplay)`: Display for the KD value.
+    - `kff_display (ByteDisplay)`: Display for the KFF value.
+    - `kb_display (ByteDisplay)`: Display for the KB value.
+    - `base_pwm_display (ByteDisplay)`: Display for the base PWM value.
+    - `laps_display (ByteDisplay)`: Display for the number of laps.
+    - `stop_time_display (ByteDisplay)`: Display for the stop time value.
+    - `running_mode_display (ByteDisplay)`: Display for the running mode.
+    - `stop_mode_display (ByteDisplay)`: Display for the stop mode.
+    - `log_data_display (ByteDisplay)`: Display for the log data.
+    - `state_display (ByteDisplay)`: Display for the robot state.
+    - `battery_display (ByteDisplay)`: Display for the battery voltage.
+    - `output_display (TextDisplay)`: Display for the output text.
+    - `debug_button (DebugButton)`: Button to toggle debug mode.
+    """
+
     def __init__(self):
         super().__init__()
         self._debug_prints = False
@@ -38,10 +61,12 @@ class ListenerWidget(QWidget):
         }
 
     def _init_ui(self) -> None:
+        """Initialize the UI components of the listener widget."""
         self._add_widgets()
         self._set_layout()
 
     def _add_widgets(self) -> None:
+        """Add widgets to the listener widget."""
         self.kp_display = ByteDisplay()
         self.ki_display = ByteDisplay()
         self.kd_display = ByteDisplay()
@@ -62,9 +87,11 @@ class ListenerWidget(QWidget):
         self.debug_button.debug_state_changed.connect(self._update_debug_state)
 
     def _update_debug_state(self, state: bool) -> None:
+        """Update the debug state based on the button click."""
         self._debug_prints = state
 
     def _set_layout(self) -> None:
+        """Set the layout for the widget."""
         values_layout = QVBoxLayout()
         values_layout.addWidget(self.kp_display)
         values_layout.addWidget(self.ki_display)
@@ -97,14 +124,17 @@ class ListenerWidget(QWidget):
         main_layout.addLayout(text_display_layout)
 
     def _start_worker(self) -> None:
+        """Starts the Bluetooth listener worker."""
         self._worker.output.connect(self._handle_output)
         self._worker.start()
 
     def _handle_output(self, data: str) -> None:
+        """Handle the output from the Bluetooth listener worker."""
         if not self._handle_command(data) or self._debug_prints:
             self.output_display.print_text(data)
 
     def _handle_command(self, msg: str) -> bool:
+        """Handle incoming commands from the robot."""
         for command in self._update_map.keys():
             if not isinstance(command.value, str):
                 continue

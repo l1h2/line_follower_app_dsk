@@ -5,6 +5,18 @@ from utils import Styles
 
 
 class DebugButton(QWidget):
+    """
+    ### DebugButton Widget
+
+    A widget that contains a button to enable or disable debug prints.
+
+    #### Parameters:
+    - `parent (QWidget | None)`: The parent widget of the DebugButton.
+
+    #### Signals:
+    - `debug_state_changed (bool)`: Emitted when the debug button is clicked, indicating the new debug state.
+    """
+
     debug_state_changed = pyqtSignal(bool)
 
     def __init__(self, parent: QWidget | None = None) -> None:
@@ -15,13 +27,16 @@ class DebugButton(QWidget):
         self._init_ui()
 
     def _init_ui(self) -> None:
+        """Initialize the UI components of the DebugButton widget."""
         self._add_widgets()
         self._set_layout()
 
     def _add_widgets(self) -> None:
+        """Add widgets to the DebugButton widget."""
         self._add_debug_button()
 
     def _add_debug_button(self) -> None:
+        """Add a debug button to the widget."""
         self._debug_button = QPushButton("Debug")
         self._debug_button.setCheckable(True)
         self._debug_button.setChecked(False)
@@ -33,6 +48,7 @@ class DebugButton(QWidget):
         )
 
     def _set_layout(self) -> None:
+        """Set the layout for the DebugButton widget."""
         main_layout = QHBoxLayout(self)
         main_layout.addWidget(self._debug_button)
         main_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
