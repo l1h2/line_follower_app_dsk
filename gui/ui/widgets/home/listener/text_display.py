@@ -1,3 +1,5 @@
+import time
+
 from PyQt6.QtWidgets import QTextEdit, QWidget
 
 from utils import UIConstants
@@ -26,7 +28,10 @@ class TextDisplay(QTextEdit):
         super().__init__(parent=parent)
         self.setReadOnly(True)
         self.setFixedWidth(450)
+
         self._max_display_lines = max_display_lines
+        self._last_crop_time = time.time()
+        self._crop_interval = 0.034  # in seconds
 
     def print_text(self, text: str) -> None:
         """
@@ -40,6 +45,13 @@ class TextDisplay(QTextEdit):
     def _manage_display(self, text: str) -> None:
         """Manage the display of text in the QTextEdit widget."""
         self.append(text)
+
+        if self._last_crop_time + self._crop_interval < time.time():
+            self._last_crop_time = time.time()
+            self._crop_text()
+
+    def _crop_text(self) -> None:
+        """Crop the text in the QTextEdit widget to fit within the maximum display lines."""
         current_text = self.toPlainText()
         lines = current_text.splitlines()
 

@@ -124,4 +124,4 @@ class BluetoothListenerWorker(QThread):
 
     def _check_buffer(self, buffer: bytes) -> bool:
         """Check if the buffer is valid and not a stop signal."""
-        return not buffer == SerialInputs.STOP_SIGNAL.value[: len(buffer)]
+        return buffer != SerialInputs.STOP_SIGNAL.value[: len(buffer)]
