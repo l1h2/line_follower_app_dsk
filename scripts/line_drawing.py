@@ -15,9 +15,9 @@ AVG_ERROR = (TOTAL_CENTRAL_SENSORS - 1) / 2
 
 # TODO: Calibrate values on actual track and adjust for different speeds
 DELTA_DISTANCE = 1
-SENSOR_ANGLE = np.pi / TOTAL_CENTRAL_SENSORS / 2
+SENSOR_ANGLE = np.pi / TOTAL_CENTRAL_SENSORS / 40
 
-MARKER_OFFSET = 2
+MARKER_OFFSET = 40
 
 
 def get_dataframe() -> pd.DataFrame:

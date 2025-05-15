@@ -1,7 +1,7 @@
 from enum import Enum
 
 # Bit arrangement for sensor data when receiving binary data from the robot
-BIT_POSITIONS = (0, 8, 9, 10, 11, 1, 12, 13, 14, 15, 3, 2)
+BIT_POSITIONS = (0, 8, 9, 10, 11, 1, 2, 12, 13, 14, 15, 3)
 
 
 class RobotStates(Enum):

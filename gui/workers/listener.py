@@ -113,10 +113,11 @@ class BluetoothListenerWorker(QThread):
             [
                 f"{bits[0] if bits[0] == 1 else '  '}",
                 "|",
-                "  ".join(str(bit if bit == 1 else "  ") for bit in bits[1:10]),
+                "  ".join(str(bit if bit == 1 else "  ") for bit in bits[1:6]),
+                "  ".join(str(bit if bit == 1 else "  ") for bit in bits[7:11]),
                 "|",
-                f"{bits[10] if bits[10] == 1 else '  '}",
-                f"||  {bits[11] if bits[11] == 1 else '  '}",
+                f"{bits[11] if bits[11] == 1 else '  '}",
+                f"||  {bits[6] if bits[6] == 1 else '  '}",
             ]
         )
 
